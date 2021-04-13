@@ -7,7 +7,6 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Boiler Plate</title>
         <link rel="shortcut icon" href="/img/favicon-ipr.png" />
         <link rel="apple-touch-icon" href="/img/favicon-ipr.png" />
         <link rel="manifest" href="/manifest.json" />
