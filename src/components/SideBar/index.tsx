@@ -8,8 +8,11 @@ import {
   DrawerContent,
   DrawerCloseButton
 } from '@chakra-ui/react'
+import { useSidebarDrawer } from 'contexts/SideBarDrawerContext'
 import { SideBarNav } from './SideBarNav'
 export default function SideBar() {
+  const { isOpen, onClose } = useSidebarDrawer()
+
   const isDrawerSideBar = useBreakpointValue({
     base: true,
     lg: false
@@ -18,7 +21,7 @@ export default function SideBar() {
   if (isDrawerSideBar) {
     return (
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      <Drawer isOpen={true} placement="left" onClose={() => {}}>
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay>
           <DrawerContent bgColor="gray.800" p="4">
             <DrawerCloseButton mt="6" />

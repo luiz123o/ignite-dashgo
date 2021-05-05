@@ -8,21 +8,25 @@ import {
 export const GENERAL_MENU = {
   Dashboard: {
     path: '',
-    icon: RiDashboardLine
+    icon: RiDashboardLine,
+    href: '/dashboard'
   },
   Usuários: {
     path: '',
-    icon: RiContactsLine
+    icon: RiContactsLine,
+    href: '/users'
   }
 }
 
 export const AUTOMATION_MENU = {
   Formulários: {
     path: '',
-    icon: RiInputMethodLine
+    icon: RiInputMethodLine,
+    href: '/forms'
   },
   Automação: {
     path: '',
-    icon: RiGitMergeLine
+    icon: RiGitMergeLine,
+    href: '/automation'
   }
 }

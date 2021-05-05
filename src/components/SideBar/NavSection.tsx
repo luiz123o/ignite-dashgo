@@ -10,8 +10,13 @@ export default function NavSection() {
           GERAL
         </Text>
         <Stack spacing="4" mt="8" align="stretch">
-          {Object.entries(GENERAL_MENU).map(([title, { icon }]) => (
-            <MenuSideBar key={`link-${title}`} title={title} icon={icon} />
+          {Object.entries(GENERAL_MENU).map(([title, { icon, href }]) => (
+            <MenuSideBar
+              key={`link-${title}`}
+              title={title}
+              icon={icon}
+              href={href}
+            />
           ))}
         </Stack>
       </Box>
@@ -20,8 +25,13 @@ export default function NavSection() {
           AUTOMAÇÂO
         </Text>
         <Stack spacing="4" mt="8" align="stretch">
-          {Object.entries(AUTOMATION_MENU).map(([title, { icon }]) => (
-            <MenuSideBar key={`link-${title}`} title={title} icon={icon} />
+          {Object.entries(AUTOMATION_MENU).map(([title, { icon, href }]) => (
+            <MenuSideBar
+              key={`link-${title}`}
+              title={title}
+              icon={icon}
+              href={href}
+            />
           ))}
         </Stack>
       </Box>
