@@ -1,5 +1,5 @@
 import { IconType } from 'react-icons'
-import Link from 'next/link'
+import { ActiveLink } from '../../ActiveLink'
 import { Text, Link as ChakraLink, Icon } from '@chakra-ui/react'
 type MenuSideBarProps = {
   title: string
@@ -9,13 +9,13 @@ type MenuSideBarProps = {
 
 export const MenuSideBar = ({ title, icon, href }: MenuSideBarProps) => {
   return (
-    <Link href={href} passHref>
+    <ActiveLink href={href} passHref>
       <ChakraLink display="flex" align="center">
         <Icon as={icon} fontSize="20" />
         <Text ml="4" fontWeight="medium">
           {title}
         </Text>
       </ChakraLink>
-    </Link>
+    </ActiveLink>
   )
 }

@@ -7,12 +7,24 @@ import {
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Input } from '../components/Form/Input'
 
+type SignInFormData = {
+  email: string
+  password: string
+}
+
 export default function SignIn() {
+  const { register, handleSubmit, formState } = useForm()
+  const { errors, isSubmitting } = formState
   const [show, setShow] = useState(false)
 
   const handleClick = () => setShow(!show)
+
+  const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+  }
 
   return (
     <Flex w="100vw" h="100vh" align="center" justify="center">
@@ -24,14 +36,21 @@ export default function SignIn() {
         p="8"
         borderRadius={8}
         flexDirection="column"
+        onSubmit={handleSubmit(handleSignIn)}
       >
         <Stack spacing="4">
           <InputGroup>
-            <Input name="email" type="email" label="E-mail" />
+            <Input
+              {...register('email')}
+              name="email"
+              type="email"
+              label="E-mail"
+            />
           </InputGroup>
 
           <InputGroup size="md">
             <Input
+              {...register('password')}
               h="2.5rem"
               autoComplete="new-password"
               label="Password"
@@ -48,6 +67,7 @@ export default function SignIn() {
                 alignSelf="center"
                 size="sm"
                 onClick={handleClick}
+                isLoading={isSubmitting}
               >
                 {show ? (
                   <ViewOffIcon
