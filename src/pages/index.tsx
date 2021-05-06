@@ -9,20 +9,29 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Input } from '../components/Form/Input'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type SignInFormData = {
   email: string
   password: string
 }
 
+const signInFormSchema = yup.object().shape({
+  email: yup.string().required('E-mail obrigatório').email('E-mail inválido'),
+  password: yup.string().required('Senha obrigatória')
+})
+
 export default function SignIn() {
-  const { register, handleSubmit, formState } = useForm()
+  const { register, handleSubmit, formState } = useForm({
+    resolver: yupResolver(signInFormSchema)
+  })
   const { errors, isSubmitting } = formState
   const [show, setShow] = useState(false)
 
   const handleClick = () => setShow(!show)
 
-  const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
+  const handleSignIn: SubmitHandler<SignInFormData> = async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
   }
 
@@ -45,6 +54,7 @@ export default function SignIn() {
               name="email"
               type="email"
               label="E-mail"
+              error={errors.email}
             />
           </InputGroup>
 
@@ -56,6 +66,7 @@ export default function SignIn() {
               label="Password"
               name="password"
               type={show ? 'text' : 'password'}
+              error={errors.password}
             />
             <InputRightElement h="100%" mt="4">
               <Button
