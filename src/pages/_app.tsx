@@ -3,6 +3,14 @@ import { ChakraProvider } from '@chakra-ui/react'
 import Head from 'next/head'
 import { theme } from 'styles/theme'
 import { SideDrawerProvider } from 'contexts/SideBarDrawerContext'
+import { makeServer } from 'services/mirage'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+
+if (process.env.NODE_ENV === 'development') {
+  makeServer()
+}
+const queryClient = new QueryClient()
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,11 +21,14 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="manifest" href="/manifest.json" />
         <meta name="description" content="boilerplate" />
       </Head>
-      <ChakraProvider theme={theme}>
-        <SideDrawerProvider>
-          <Component {...pageProps} />
-        </SideDrawerProvider>
-      </ChakraProvider>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider theme={theme}>
+          <SideDrawerProvider>
+            <Component {...pageProps} />
+          </SideDrawerProvider>
+        </ChakraProvider>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </>
   )
 }
