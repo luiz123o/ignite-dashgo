@@ -4,13 +4,13 @@ import Head from 'next/head'
 import { theme } from 'styles/theme'
 import { SideDrawerProvider } from 'contexts/SideBarDrawerContext'
 import { makeServer } from 'services/mirage'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { queryClient } from 'services/queryClient'
 
 if (process.env.NODE_ENV === 'development') {
   makeServer()
 }
-const queryClient = new QueryClient()
 
 function App({ Component, pageProps }: AppProps) {
   return (

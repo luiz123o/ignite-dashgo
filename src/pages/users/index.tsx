@@ -1,156 +1,144 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  Heading,
-  Checkbox,
-  Th,
-  Icon,
-  Table,
-  Thead,
-  Tr,
-  Tbody,
-  Td,
-  Spinner,
-  useBreakpointValue
-} from '@chakra-ui/react'
+import * as S from '@chakra-ui/react'
 import Link from 'next/link'
 import { Header } from 'components/Header'
 import { Pagination } from 'components/Pagination'
 import SideBar from 'components/SideBar'
 import { RiAddLine, RiPencilLine } from 'react-icons/ri'
-
-import { useQuery } from 'react-query'
+import { useUsers } from 'services/hooks/useUsers'
+import { useState } from 'react'
+import { queryClient } from 'services/queryClient'
+import { api } from 'services/api'
+import { useBreakpointValue } from '@chakra-ui/react'
 
 export default function UserList() {
-  const { error, isLoading, data } = useQuery('users', async () => {
-    const response = await fetch('http://localhost:3000/api/users')
-    const data = await response.json()
-
-    const users = data.users.map(
-      (user: {
-        id: string
-        name: string
-        email: string
-        createdAt: string | number | Date
-      }) => {
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          createdAt: new Date(user.createdAt).toLocaleString('pt-BR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric'
-          })
-        }
-      }
-    )
-
-    return users
-  })
+  const [page, setPage] = useState(1)
+  const { error, isLoading, isFetching, data } = useUsers(page)
 
   const isWideVersion = useBreakpointValue({
     base: false,
     lg: true
   })
 
+  async function handlePrefetchUser(userId: number) {
+    await queryClient.prefetchQuery(['user', userId], async () => {
+      const response = await api.get(`users/${userId}`)
+
+      return response.data
+    })
+  }
+
   return (
-    <Box>
+    <S.Box>
       <Header />
 
-      <Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
+      <S.Flex w="100%" my="6" maxWidth={1480} mx="auto" px="6">
         <SideBar />
 
-        <Box flex="1" borderRadius={8} bg="gray.800" p="8">
-          <Flex mb="8" justify="space-between" align="center">
-            <Heading size="lg" fontWeight="normal">
+        <S.Box flex="1" borderRadius={8} bg="gray.800" p="8">
+          <S.Flex mb="8" justify="space-between" align="center">
+            <S.Heading size="lg" fontWeight="normal">
               Usuarios
-            </Heading>
+              {!isLoading && isFetching && (
+                <S.Spinner size="sm" color="gray.500" ml="4" />
+              )}
+            </S.Heading>
             <Link href="/users/create" passHref>
-              <Button
+              <S.Button
                 as="a"
                 size="sm"
                 fontSize="sm"
                 colorScheme="pink"
-                leftIcon={<Icon as={RiAddLine} fontSize="20" />}
+                leftIcon={<S.Icon as={RiAddLine} fontSize="20" />}
               >
                 Criar Novo
-              </Button>
+              </S.Button>
             </Link>
-          </Flex>
+          </S.Flex>
 
           {isLoading ? (
-            <Flex justify="center">
+            <S.Flex justify="center">
               {' '}
-              <Spinner />
-            </Flex>
+              <S.Spinner />
+            </S.Flex>
           ) : error ? (
-            <Flex justify="center">
-              <Text>Erro ao carregar dados dos usuarios</Text>
-            </Flex>
+            <S.Flex justify="center">
+              <S.Text>Erro ao carregar dados dos usuarios</S.Text>
+            </S.Flex>
           ) : (
             <>
-              <Table colorScheme="whiteAlpha">
-                <Thead>
-                  <Tr>
-                    <Th px={['4', '4', '6']} color="gray.300" width="8">
-                      <Checkbox colorScheme="pink" />
-                    </Th>
-                    <Th>Usuários</Th>
-                    {isWideVersion && <Th>Data de cadastro</Th>}
-                    <Th width="8"></Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {data.map(
-                    (user: {
-                      name: string
-                      email: string
-                      id: string
-                      createdAt: string
-                    }) => {
-                      return (
-                        <Tr key={user.id}>
-                          <Td px={['4', '4', '6']}>
-                            <Checkbox colorScheme="pink" />
-                          </Td>
-                          <Td>
-                            <Box>
-                              <Text fontWeight="bold">{user.name}</Text>
-                              <Text fontSize="sm" color="gray.300">
-                                {user.email}
-                              </Text>
-                            </Box>
-                          </Td>
-                          {isWideVersion && <Td>{user.createdAt}</Td>}
-                          <Td>
-                            {isWideVersion && (
-                              <Button
-                                as="a"
-                                size="sm"
-                                fontSize="sm"
-                                colorScheme="purple"
-                                leftIcon={
-                                  <Icon as={RiPencilLine} fontSize="20" />
-                                }
-                              >
-                                Editar
-                              </Button>
-                            )}
-                          </Td>
-                        </Tr>
-                      )
-                    }
-                  )}
-                </Tbody>
-              </Table>
-              <Pagination />
+              <S.Table colorScheme="whiteAlpha">
+                <S.Thead>
+                  <S.Tr>
+                    <S.Th px={['4', '4', '6']} color="gray.300" width="8">
+                      <S.Checkbox colorScheme="pink" />
+                    </S.Th>
+                    <S.Th>Usuários</S.Th>
+                    {isWideVersion && <S.Th>Data de cadastro</S.Th>}
+                    <S.Th width="8"></S.Th>
+                  </S.Tr>
+                </S.Thead>
+                <S.Tbody>
+                  {!!data &&
+                    data.users.map(
+                      (user: {
+                        name: string
+                        email: string
+                        id: string
+                        createdAt: string
+                      }) => {
+                        return (
+                          <S.Tr key={user.id}>
+                            <S.Td px={['4', '4', '6']}>
+                              <S.Checkbox colorScheme="pink" />
+                            </S.Td>
+                            <S.Td>
+                              <S.Box>
+                                <S.Link
+                                  color="purple.400"
+                                  onMouseEnter={() =>
+                                    handlePrefetchUser(user.id)
+                                  }
+                                >
+                                  <S.Text fontWeight="bold">{user.name}</S.Text>
+                                </S.Link>
+                                <S.Text fontSize="sm" color="gray.300">
+                                  {user.email}
+                                </S.Text>
+                              </S.Box>
+                            </S.Td>
+                            {isWideVersion && <S.Td>{user.createdAt}</S.Td>}
+                            <S.Td>
+                              {isWideVersion && (
+                                <S.Button
+                                  as="a"
+                                  size="sm"
+                                  fontSize="sm"
+                                  colorScheme="purple"
+                                  leftIcon={
+                                    <S.Icon as={RiPencilLine} fontSize="20" />
+                                  }
+                                >
+                                  Editar
+                                </S.Button>
+                              )}
+                            </S.Td>
+                          </S.Tr>
+                        )
+                      }
+                    )}
+                </S.Tbody>
+              </S.Table>
+              {!!data && (
+                <Pagination
+                  totalCountOfRegisters={data.totalCount}
+                  currentPage={page}
+                  onPageChange={setPage}
+                />
+              )}
             </>
           )}
-        </Box>
-      </Flex>
-    </Box>
+        </S.Box>
+      </S.Flex>
+    </S.Box>
   )
 }
